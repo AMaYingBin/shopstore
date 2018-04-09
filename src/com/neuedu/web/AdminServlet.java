@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.neuedu.dao.impl.AdminDAOImpl;
 import com.neuedu.dao.impl.CategoryDAOImpl;
@@ -29,10 +30,10 @@ public class AdminServlet extends HttpServlet {
 		AdminDAOImpl admindao = new AdminDAOImpl();
 		CategoryDAOImpl categorydao = new CategoryDAOImpl();
 		UserDAOImpl userdao = new UserDAOImpl();
-		ProductDAOImpl productdao=new ProductDAOImpl();
+		ProductDAOImpl productdao = new ProductDAOImpl();
 		String uri = req.getRequestURI();
 		String path = uri.substring(uri.lastIndexOf("/"), uri.lastIndexOf("."));
-System.out.println(path);		
+		System.out.println(path);
 		if ("/userlist".equals(path)) {
 			List<User> users = userdao.findAll();
 			req.setAttribute("users", users);
@@ -122,38 +123,54 @@ System.out.println(path);
 			List<Product> products = productdao.findAll();
 			req.setAttribute("products", products);
 			req.getRequestDispatcher("product-list.jsp").forward(req, resp);
-		}else if ("/productload".equals(path)) {
-			List<Category> categories= categorydao.FindAll();
+		} else if ("/productload".equals(path)) {
+			List<Category> categories = categorydao.FindAll();
 			req.setAttribute("categories", categories);
 			req.getRequestDispatcher("product-add.jsp").forward(req, resp);
-		}else if ("/productadd".equals(path)) {
-			String name=req.getParameter("productname");
-			String descr=req.getParameter("productdescr");
-			double normalprice=Double.valueOf(req.getParameter("normalprice"));
-			Integer categoryid=Integer.parseInt(req.getParameter("fid"));
-			Category category=categorydao.findById(categoryid);
-			Product p=new Product(name, descr, normalprice, null, category);
+		} else if ("/productadd".equals(path)) {
+			String name = req.getParameter("productname");
+			String descr = req.getParameter("productdescr");
+			double normalprice = Double.valueOf(req.getParameter("normalprice"));
+			Integer categoryid = Integer.parseInt(req.getParameter("fid"));
+			Category category = categorydao.findById(categoryid);
+			Product p = new Product(name, descr, normalprice, null, category);
 			productdao.add(p);
 			resp.sendRedirect("productlist.do");
-		}else if ("/productsimplsearch".equals(path)) {
-			String keywords=req.getParameter("keywords");
-			List<Product> products= productdao.simplsearch(keywords);
-			if(products.size()==0) {
+		} else if ("/productsimplsearch".equals(path)) {
+			String keywords = req.getParameter("keywords");
+			List<Product> products = productdao.simplsearch(keywords);
+			if (products.size() == 0) {
 				req.setAttribute("nothing", "没有查询结果");
 				req.getRequestDispatcher("product-list.jsp").forward(req, resp);
-			}else {
+			} else {
 				req.setAttribute("products", products);
 				req.getRequestDispatcher("product-list.jsp").forward(req, resp);
 			}
-		}else if ("/usersimplsearch".equals(path)) {
-			String keywords=req.getParameter("keywords");
-			List<Product> products= productdao.simplsearch(keywords);
-			if(products.size()==0) {
+		} else if ("/usersimplsearch".equals(path)) {
+			String keywords = req.getParameter("keywords");
+			List<Product> products = productdao.simplsearch(keywords);
+			if (products.size() == 0) {
 				req.setAttribute("nothing", "没有查询结果");
 				req.getRequestDispatcher("product-list.jsp").forward(req, resp);
-			}else {
+			} else {
 				req.setAttribute("products", products);
 				req.getRequestDispatcher("product-list.jsp").forward(req, resp);
+			}
+		} else if ("/login".equals(path)) {
+			String aname = req.getParameter("aname");
+			String apwd = req.getParameter("apwd");
+			System.out.println(aname + "-----------" + apwd);
+			Admin admin = admindao.findByAname(aname);
+			if (admin != null) {
+				if (ServletUtil.MD5(apwd).equalsIgnoreCase(admin.getApwd())) {
+					resp.sendRedirect("index.jsp");
+				} else {
+					req.setAttribute("error_message", "用户名或者密码错误");
+					req.getRequestDispatcher("login.jsp").forward(req, resp);
+				}
+			} else {
+				req.setAttribute("error_message", "用户名或者密码错误");
+				req.getRequestDispatcher("login.jsp").forward(req, resp);
 			}
 		}
 

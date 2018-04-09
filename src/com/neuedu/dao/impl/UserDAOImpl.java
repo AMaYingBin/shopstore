@@ -133,11 +133,11 @@ public class UserDAOImpl implements UserDAO{
 		Statement stmt=null;
 		ResultSet rs=null;
 	    String sql="select * from t_user where username='"+name+"'";
-	     stmt=DBUtil.getStatement(conn);
-	    rs=DBUtil.getResultset(stmt, sql);
 	     User user=null;
 	try {
-		while(rs.next()){
+		stmt=DBUtil.getStatement(conn);
+		rs=DBUtil.getResultset(stmt, sql);
+		if(rs.next()){
 			user=new User();
 			 user.setId(rs.getInt("id"));
 		     user.setUsername(rs.getString("username"));

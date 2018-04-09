@@ -101,7 +101,38 @@ public class ProductDAOImpl implements ProductDAO {
 
 	@Override
 	public Product findById(Integer id) {
-		return null;
+		conn=DBUtil.getConnection();
+		Statement stmt=null;
+		ResultSet rs=null;
+	    String sql="select p.id,p.name,p.descr,p.normalprice,p.memberprice,p.pdate,p.categoryid,c.id,c.`name`,c.descr,c.pid,c.leaf,c.grade from t_product p join t_category c on p.categoryid=c.id where p.id="+id;
+	     stmt=DBUtil.getStatement(conn);
+	    rs=DBUtil.getResultset(stmt, sql);
+	     Product p=null;
+	try {
+		while(rs.next()){
+			p=new Product();
+			 p.setId(rs.getInt("id"));
+			 p.setName(rs.getString("name"));
+			 p.setDescr(rs.getString("descr"));
+			 p.setNormalprice(rs.getDouble("normalprice"));
+			 p.setMemberprice(rs.getDouble("memberprice"));
+			 p.setPdate(rs.getTimestamp("pdate"));
+			 Category category = new Category();
+				category.setId(rs.getInt("c.id"));
+				category.setName(rs.getString("c.name"));
+				category.setDescr(rs.getString("c.descr"));
+				category.setPid(rs.getInt("pid"));
+				category.setLeaf(rs.getBoolean("leaf"));
+				category.setGrade(rs.getInt("grade"));
+				p.setCategory(category);
+			 
+		}
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}finally {
+		DBUtil.close(conn, stmt);
+	}
+		return p;
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.neuedu.dao.AdminDAO;
 import com.neuedu.pojo.Admin;
+import com.neuedu.pojo.User;
 import com.neuedu.util.DBUtil;
 
 
@@ -126,5 +127,32 @@ public class AdminDAOImpl implements AdminDAO{
 		}
 		return admin;
 	}
+	public Admin findByAname(String name) {
+		conn=DBUtil.getConnection();
+		Statement stmt=null;
+		ResultSet rs=null;
+		Admin admin=null;
+	    String sql="select * from t_admin where aname='"+name+"'";
+	try {
+		boolean autocommit=conn.getAutoCommit();
+		conn.setAutoCommit(false);
+		stmt=DBUtil.getStatement(conn);
+		System.out.println(sql);
+		rs=DBUtil.getResultset(stmt, sql);
+		while(rs.next()){
+			admin=new Admin();
+			 admin.setId(rs.getInt("id"));
+			 admin.setAname(rs.getString("aname"));
+			 admin.setApwd(rs.getString("apwd"));
+		}
+		conn.commit();
+		conn.setAutoCommit(autocommit);
+	} catch (SQLException e) {
+		DBUtil.rollback(conn);
+		e.printStackTrace();
+	}
+		return admin;
+	}
+	
 
 }

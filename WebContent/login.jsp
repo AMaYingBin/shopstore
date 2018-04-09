@@ -18,7 +18,11 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<link rel="stylesheet" href="style/base.css" />
 	<link rel="stylesheet" href="style/head.css" />
-
+	<script type="text/javascript">
+	function change() {
+		document.getElementById("img").src='code?'+Math.random();
+	}
+								</script>
 	<body>
 
 		<c:import url="header.jsp"></c:import>
@@ -44,8 +48,10 @@
 									/ style="width: 170px; height: 24px; line-height: 24px; padding-left: 5px; color: #3d4245; border: 1px solid #e4e4e4;">
 							</div>
 							<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${error_message }</div>
-							<div class="dl_jzmm">
-								<input name="" type="checkbox" value="" /> 记住密码，下次自动登录
+							<div>${code_error_msg }</div>
+							<div class="dl_yhm">
+								<a href="javascript:;"
+									onclick="change()"><img id="img" src="code"  /> 看不清楚，换一张？</a> <input type="text" name="code"/>
 							</div>
 							<div class="dl_dl">
 								<input type="submit" value="登 录"

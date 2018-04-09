@@ -21,7 +21,8 @@
 
 	<body>
 		<!--抬头结束-->
-		<c:import url="header.jsp"></c:import>
+		<%@include file="header.jsp" %>
+	<%-- 	<c:import url="header.jsp"></c:import> --%>
 		<!--banner开始-->
 		<div class="mainbanner">
 			<div class="mainbanner_window">
@@ -195,7 +196,7 @@
 								<c:forEach var="product1" items="${ps1 }">
 									<div class="remai1">
 										<div class="remai1_1">
-											<a href="#"><img src="images/xinpin3.jpg" width="164"
+											<a href="productload.action?id=${product1.id }"><img src="images/xinpin3.jpg" width="164"
 												height="181" /></a>
 										</div>
 										<div class="renai1_2">
